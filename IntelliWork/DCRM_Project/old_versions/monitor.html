@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCRM Real-Time Monitoring Dashboard</title>
+    <link rel="stylesheet" href="monitor.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="grid-overlay"></div>
+        <div class="glow-orb glow-orb-1"></div>
+        <div class="glow-orb glow-orb-2"></div>
+        <div class="glow-orb glow-orb-3"></div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Header with animated title -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="circuit-icon">⚡</div>
+                    <div>
+                        <h1 class="animated-title">DCRM Live Monitor</h1>
+                        <p class="subtitle">Real-Time Circuit Breaker Analysis</p>
+                    </div>
+                </div>
+                <div class="system-status">
+                    <div class="status-indicator">
+                        <div class="pulse-dot"></div>
+                        <span id="systemStatus">System Active</span>
+                    </div>
+                    <div class="timestamp" id="currentTime"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Circuit Breaker Visualization -->
+            <div class="card breaker-card">
+                <div class="card-header">
+                    <h3>🔌 Circuit Breaker Status</h3>
+                    <div class="card-actions">
+                        <button class="icon-btn" onclick="toggleMonitoring()">
+                            <span id="monitorIcon">⏸️</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="breaker-visual">
+                    <div class="breaker-container">
+                        <div class="circuit-breaker" id="breakerSwitch">
+                            <div class="breaker-body">
+                                <div class="breaker-switch" id="switchHandle">
+                                    <div class="switch-handle"></div>
+                                </div>
+                                <div class="status-led" id="statusLed"></div>
+                            </div>
+                            <div class="connection-lines">
+                                <div class="line line-input"></div>
+                                <div class="line line-output"></div>
+                            </div>
+                        </div>
+                        <div class="breaker-labels">
+                            <span class="label-input">INPUT</span>
+                            <span class="label-output">OUTPUT</span>
+                        </div>
+                    </div>
+                    <div class="current-state" id="breakerState">
+                        <div class="state-label">Current State:</div>
+                        <div class="state-value" id="stateValue">CLOSED - NORMAL</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Waveform Chart -->
+            <div class="card waveform-card">
+                <div class="card-header">
+                    <h3>📊 Live Waveform</h3>
+                    <div class="chart-controls">
+                        <button class="small-btn" onclick="clearChart()">Clear</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="waveformChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Fault Detection Status -->
+            <div class="card detection-card">
+                <div class="card-header">
+                    <h3>🎯 Fault Detection</h3>
+                </div>
+                <div class="detection-content">
+                    <div class="fault-display" id="faultDisplay">
+                        <div class="fault-icon" id="faultIcon">✓</div>
+                        <div class="fault-text" id="faultText">NO FAULT DETECTED</div>
+                        <div class="fault-confidence" id="faultConfidence">Confidence: --</div>
+                    </div>
+                    <div class="confidence-bars" id="confidenceBars">
+                        <!-- Dynamic confidence bars -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alert History -->
+            <div class="card alerts-card">
+                <div class="card-header">
+                    <h3>🔔 Alert History</h3>
+                    <button class="small-btn" onclick="clearAlerts()">Clear</button>
+                </div>
+                <div class="alerts-container" id="alertsContainer">
+                    <div class="no-alerts">No alerts yet</div>
+                </div>
+            </div>
+
+            <!-- Statistics Dashboard -->
+            <div class="card stats-card">
+                <div class="card-header">
+                    <h3>📈 Statistics</h3>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-icon">🔍</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalScans">0</div>
+                            <div class="stat-label">Total Scans</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-content">
+                            <div class="stat-value fault-count" id="faultCount">0</div>
+                            <div class="stat-label">Faults Detected</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="uptime">00:00:00</div>
+                            <div class="stat-label">Uptime</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-value success-rate" id="successRate">100%</div>
+                            <div class="stat-label">Health Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Controls -->
+            <div class="card controls-card">
+                <div class="card-header">
+                    <h3>⚙️ System Controls</h3>
+                </div>
+                <div class="controls-content">
+                    <div class="control-group">
+                        <label>Monitoring Speed</label>
+                        <input type="range" id="speedControl" min="500" max="5000" value="2000" step="500">
+                        <span id="speedDisplay">2.0s</span>
+                    </div>
+                    <div class="control-group">
+                        <label>Fault Simulation</label>
+                        <select id="simulationType">
+                            <option value="normal">Normal Operation</option>
+                            <option value="spike">Spike Fault</option>
+                            <option value="plateau">Plateau Fault</option>
+                            <option value="unstable">Unstable Signal</option>
+                            <option value="random">Random</option>
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button class="primary-btn" onclick="startMonitoring()">
+                            🚀 Start Monitoring
+                        </button>
+                        <button class="secondary-btn" onclick="stopMonitoring()">
+                            ⏹️ Stop
+                        </button>
+                        <button class="danger-btn" onclick="resetSystem()">
+                            🔄 Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="monitor.js"></script>
+</body>
+</html>

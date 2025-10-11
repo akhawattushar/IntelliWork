@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCRM Real-Time Monitoring Dashboard</title>
+    <link rel="stylesheet" href="monitor_v2.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="monitor-background">
+        <div class="monitor-orb orb-1"></div>
+        <div class="monitor-orb orb-2"></div>
+        <div class="monitor-orb orb-3"></div>
+        <div class="tech-grid"></div>
+    </div>
+
+    <div class="dashboard-wrapper">
+        <!-- Top Header -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <div class="logo-container">
+                    <div class="pulse-icon">📡</div>
+                    <div class="title-group">
+                        <h1 class="dashboard-title">DCRM Live Monitor</h1>
+                        <p class="dashboard-subtitle">Real-Time Circuit Breaker Analysis</p>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <!-- NEW: Mode Toggle Switch -->
+                <div class="mode-selector">
+                    <span class="mode-label">Data Source:</span>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="modeToggle" class="toggle-input">
+                        <label for="modeToggle" class="toggle-label">
+                            <span class="toggle-text demo-text">Demo Mode</span>
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-text hardware-text">Hardware Mode</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="status-pill">
+                    <span class="status-dot"></span>
+                    <span id="systemStatus">System Active</span>
+                </div>
+                <div class="time-display" id="currentTime"></div>
+            </div>
+        </header>
+
+        <!-- Mode Info Banner -->
+        <div class="mode-info-banner" id="modeInfoBanner">
+            <div class="banner-icon">🧪</div>
+            <div class="banner-content">
+                <strong>Demo Mode Active</strong>
+                <p>Using simulated waveform data for testing and presentation</p>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <main class="dashboard-main">
+            <!-- Top Row: Breaker Visual & Controls -->
+            <div class="top-section">
+                <!-- Circuit Breaker Visualization -->
+                <section class="monitor-card breaker-visual-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span class="card-icon">🔌</span>
+                            Circuit Breaker Status
+                        </h2>
+                        <button class="control-btn" onclick="toggleMonitoring()" id="toggleBtn">
+                            <span id="monitorIcon">▶️</span>
+                            <span id="monitorText">Start</span>
+                        </button>
+                    </div>
+                    <div class="breaker-display">
+                        <div class="breaker-unit">
+                            <div class="breaker-housing">
+                                <div class="breaker-switch-wrapper" id="switchWrapper">
+                                    <div class="breaker-lever"></div>
+                                </div>
+                                <div class="status-indicator" id="statusIndicator"></div>
+                                <div class="connection-wire wire-top"></div>
+                                <div class="connection-wire wire-bottom"></div>
+                            </div>
+                            <div class="terminal-labels">
+                                <span class="terminal-label">INPUT</span>
+                                <span class="terminal-label">OUTPUT</span>
+                            </div>
+                        </div>
+                        <div class="state-display">
+                            <div class="state-info">
+                                <span class="state-label">Current State</span>
+                                <span class="state-status" id="breakerStateText">STANDBY</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- System Controls Panel -->
+                <section class="monitor-card controls-panel-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span class="card-icon">⚙️</span>
+                            System Controls
+                        </h2>
+                    </div>
+                    <div class="controls-body">
+                        <div class="control-section">
+                            <label class="control-label">
+                                <span class="label-icon">⚡</span>
+                                Monitoring Speed
+                            </label>
+                            <div class="slider-container">
+                                <input type="range" id="speedControl" class="speed-slider" 
+                                       min="500" max="5000" value="2000" step="500">
+                                <div class="slider-value" id="speedDisplay">2.0s</div>
+                            </div>
+                        </div>
+
+                        <!-- Demo Mode Only Control -->
+                        <div class="control-section" id="simulationControl">
+                            <label class="control-label">
+                                <span class="label-icon">🧪</span>
+                                Fault Simulation Type (Demo Mode)
+                            </label>
+                            <select id="simulationType" class="control-select">
+                                <option value="normal">✓ Normal Operation</option>
+                                <option value="spike">⚠️ Spike Fault</option>
+                                <option value="plateau">📊 Plateau Fault</option>
+                                <option value="unstable">〰️ Unstable Signal</option>
+                                <option value="random">🎲 Random Mix</option>
+                            </select>
+                        </div>
+
+                        <!-- Hardware Mode Info -->
+                        <div class="control-section hardware-info hidden" id="hardwareInfo">
+                            <div class="info-box">
+                                <div class="info-icon">🔧</div>
+                                <div class="info-content">
+                                    <strong>Hardware Mode</strong>
+                                    <p>Receiving data from ESP32 sensors in real-time</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="action-btn btn-start" onclick="startMonitoring()">
+                                <span class="btn-icon">🚀</span>
+                                Start Monitoring
+                            </button>
+                            <button class="action-btn btn-stop" onclick="stopMonitoring()">
+                                <span class="btn-icon">⏹️</span>
+                                Stop
+                            </button>
+                            <button class="action-btn btn-reset" onclick="resetSystem()">
+                                <span class="btn-icon">🔄</span>
+                                Reset System
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Live Waveform Chart -->
+            <section class="monitor-card waveform-chart-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">📊</span>
+                        Live Waveform Analysis
+                    </h2>
+                    <button class="control-btn-sm" onclick="clearChart()">Clear</button>
+                </div>
+                <div class="chart-area">
+                    <canvas id="waveformChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Middle Row: Fault Detection & Stats -->
+            <div class="middle-section">
+                <!-- Fault Detection Display -->
+                <section class="monitor-card fault-detection-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span class="card-icon">🎯</span>
+                            Fault Detection
+                        </h2>
+                    </div>
+                    <div class="detection-display" id="faultDisplay">
+                        <div class="fault-status-icon" id="faultIcon">✓</div>
+                        <div class="fault-status-text" id="faultText">NO FAULT DETECTED</div>
+                        <div class="fault-confidence-text" id="faultConfidence">Confidence: --</div>
+                    </div>
+                    <div class="confidence-meters" id="confidenceBars">
+                        <!-- Dynamic confidence bars -->
+                    </div>
+                </section>
+
+                <!-- Statistics Dashboard -->
+                <section class="monitor-card stats-dashboard-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span class="card-icon">📈</span>
+                            System Statistics
+                        </h2>
+                    </div>
+                    <div class="stats-panel">
+                        <div class="stat-box">
+                            <div class="stat-icon-badge">🔍</div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="totalScans">0</div>
+                                <div class="stat-name">Total Scans</div>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon-badge alert">⚠️</div>
+                            <div class="stat-info">
+                                <div class="stat-number alert-number" id="faultCount">0</div>
+                                <div class="stat-name">Faults Detected</div>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon-badge">⏱️</div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="uptime">00:00:00</div>
+                                <div class="stat-name">System Uptime</div>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon-badge success">✅</div>
+                            <div class="stat-info">
+                                <div class="stat-number success-number" id="successRate">100%</div>
+                                <div class="stat-name">Health Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Alert History -->
+            <section class="monitor-card alerts-history-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">🔔</span>
+                        Alert History
+                    </h2>
+                    <button class="control-btn-sm" onclick="clearAlerts()">Clear All</button>
+                </div>
+                <div class="alerts-list" id="alertsContainer">
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <p class="empty-text">No alerts yet</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="monitor_v2.js"></script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+num_spikes,max_spike_height,mean_resistance,std_resistance,min_resistance,max_resistance,plateau_duration_ms,max_slope,min_slope
+2,1.0,0.20158896659055048,0.1997826780595721,0.0,1.0,24.024024024024023,0.08675437282152032,-0.06065121433574561

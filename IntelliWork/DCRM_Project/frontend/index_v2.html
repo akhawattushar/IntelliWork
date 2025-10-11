@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCRM Fault Detection System</title>
+    <link rel="stylesheet" href="style_v2.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-background">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+        <div class="grid-pattern"></div>
+    </div>
+
+    <div class="main-container">
+        <!-- Hero Section with Navigation -->
+        <header class="hero-section">
+            <div class="hero-icon">
+                <div class="icon-pulse">⚡</div>
+            </div>
+            <h1 class="hero-title">
+                <span class="gradient-text">DCRM Fault Detection</span>
+            </h1>
+            <p class="hero-subtitle">AI-Powered Circuit Breaker Monitoring & Analysis</p>
+            <div class="hero-badges">
+                <span class="badge badge-success">
+                    <span class="badge-dot"></span>
+                    System Online
+                </span>
+                <span class="badge badge-info">
+                    <span class="badge-icon">🤖</span>
+                    AI Ready
+                </span>
+            </div>
+
+            <!-- NEW: Always Visible Navigation Button -->
+            <div class="navigation-bar">
+                <a href="monitor_v2.html" class="nav-link-btn">
+                    <span class="nav-icon">📡</span>
+                    Open Live Monitoring Dashboard
+                    <span class="nav-arrow">→</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="content-wrapper">
+            <!-- Upload Options -->
+            <section class="upload-section">
+                <h2 class="section-title">
+                    <span class="title-icon">📤</span>
+                    Upload Waveform Data
+                </h2>
+
+                <div class="cards-grid">
+                    <!-- CSV Upload Card -->
+                    <div class="feature-card card-hover">
+                        <div class="card-badge">Option 1</div>
+                        <div class="card-icon">📁</div>
+                        <h3 class="card-title">Upload CSV File</h3>
+                        <p class="card-description">Select a CSV file containing DCRM waveform resistance data</p>
+
+                        <div class="upload-area" id="dropZone">
+                            <input type="file" id="csvFile" accept=".csv" hidden>
+                            <div class="upload-icon">☁️</div>
+                            <p class="upload-text">Drag & drop your file here</p>
+                            <p class="upload-subtext">or</p>
+                            <button class="btn btn-secondary" onclick="document.getElementById('csvFile').click()">
+                                Browse Files
+                            </button>
+                        </div>
+
+                        <button class="btn btn-primary btn-large" onclick="uploadCSV()">
+                            <span class="btn-icon">🔍</span>
+                            Analyze CSV
+                        </button>
+                    </div>
+
+                    <!-- Manual Input Card -->
+                    <div class="feature-card card-hover">
+                        <div class="card-badge">Option 2</div>
+                        <div class="card-icon">✏️</div>
+                        <h3 class="card-title">Paste Waveform Data</h3>
+                        <p class="card-description">Enter comma-separated resistance values manually</p>
+
+                        <div class="input-wrapper">
+                            <textarea 
+                                id="waveformData" 
+                                class="custom-textarea" 
+                                placeholder="2.5, 2.6, 2.4, 2.7, 2.5, 2.8, 2.6, 2.5..."
+                                rows="6"
+                            ></textarea>
+                            <div class="input-footer">
+                                <span class="input-hint">💡 Minimum 10 values required</span>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary btn-large" onclick="analyzeManual()">
+                            <span class="btn-icon">🎯</span>
+                            Analyze Data
+                        </button>
+                    </div>
+
+                    <!-- Test Generation Card -->
+                    <div class="feature-card card-hover">
+                        <div class="card-badge">Option 3</div>
+                        <div class="card-icon">🧪</div>
+                        <h3 class="card-title">Generate Test Sample</h3>
+                        <p class="card-description">Create synthetic waveform for testing purposes</p>
+
+                        <div class="select-wrapper">
+                            <label class="select-label">Select Fault Type</label>
+                            <select id="testType" class="custom-select">
+                                <option value="normal">✓ Normal Operation</option>
+                                <option value="spike">⚠️ Spike Fault</option>
+                                <option value="plateau">📊 Plateau Fault</option>
+                                <option value="unstable">〰️ Unstable Signal</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-primary btn-large" onclick="generateTest()">
+                            <span class="btn-icon">⚡</span>
+                            Generate & Analyze
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading State -->
+            <div id="loading" class="loading-overlay hidden">
+                <div class="loading-card">
+                    <div class="spinner-container">
+                        <div class="spinner"></div>
+                        <div class="spinner-glow"></div>
+                    </div>
+                    <h3 class="loading-title">Analyzing Waveform</h3>
+                    <p class="loading-text">AI model processing your data...</p>
+                    <div class="loading-bar">
+                        <div class="loading-progress"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <section id="results" class="results-section hidden">
+                <h2 class="section-title">
+                    <span class="title-icon">📊</span>
+                    Analysis Results
+                </h2>
+
+                <div class="results-grid">
+                    <!-- Prediction Card -->
+                    <div class="result-card prediction-card">
+                        <div class="card-header-minimal">
+                            <h3>🎯 Fault Prediction</h3>
+                        </div>
+                        <div class="prediction-display">
+                            <div class="prediction-badge" id="faultType">
+                                NORMAL
+                            </div>
+                            <p class="prediction-label">Detected Fault Type</p>
+                        </div>
+                    </div>
+
+                    <!-- Confidence Scores Card -->
+                    <div class="result-card confidence-card">
+                        <div class="card-header-minimal">
+                            <h3>📈 Confidence Scores</h3>
+                        </div>
+                        <div id="confidenceScores" class="confidence-list">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+
+                    <!-- Features Card -->
+                    <div class="result-card features-card">
+                        <div class="card-header-minimal">
+                            <h3>🔬 Extracted Features</h3>
+                        </div>
+                        <div id="featuresList" class="features-grid-display">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="results-actions">
+                    <a href="monitor_v2.html" class="btn btn-secondary btn-large">
+                        <span class="btn-icon">📡</span>
+                        Open Live Monitor
+                    </a>
+                    <button class="btn btn-outline btn-large" onclick="hideAll()">
+                        <span class="btn-icon">🔄</span>
+                        New Analysis
+                    </button>
+                </div>
+            </section>
+
+            <!-- Error Display -->
+            <div id="error" class="error-banner hidden">
+                <div class="error-icon">⚠️</div>
+                <div class="error-content">
+                    <h4 class="error-title">Error</h4>
+                    <p class="error-message" id="errorMessage">An error occurred</p>
+                </div>
+                <button class="error-close" onclick="hideAll()">✕</button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-text">
+                    Powered by AI • Real-time Analysis • Smart India Hackathon 2025
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app_v2.js"></script>
+</body>
+</html>

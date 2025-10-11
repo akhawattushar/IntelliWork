@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCRM Fault Detection System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔌 DCRM Fault Detection System</h1>
+            <p>AI-Powered Circuit Breaker Monitoring</p>
+        </header>
+
+        <div class="upload-section">
+            <h2>Upload Waveform Data</h2>
+            <div class="upload-options">
+                <div class="option">
+                    <h3>Option 1: Upload CSV File</h3>
+                    <input type="file" id="csvFile" accept=".csv">
+                    <button onclick="uploadCSV()">Analyze CSV</button>
+                </div>
+
+                <div class="option">
+                    <h3>Option 2: Paste Waveform Data</h3>
+                    <textarea id="waveformData" placeholder="Paste comma-separated resistance values here (e.g., 2.5, 2.6, 2.4, ...)"></textarea>
+                    <button onclick="analyzeManual()">Analyze Data</button>
+                </div>
+
+                <div class="option">
+                    <h3>Option 3: Generate Test Sample</h3>
+                    <select id="testType">
+                        <option value="normal">Normal</option>
+                        <option value="spike">Spike Fault</option>
+                        <option value="plateau">Plateau Fault</option>
+                        <option value="unstable">Unstable Signal</option>
+                    </select>
+                    <button onclick="generateTest()">Generate & Analyze</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Analyzing waveform...</p>
+        </div>
+
+        <div id="results" class="results hidden">
+            <h2>Analysis Results</h2>
+            <div class="result-card">
+                <div class="prediction">
+                    <h3>Predicted Fault Type:</h3>
+                    <div id="faultType" class="fault-type"></div>
+                </div>
+
+                <div class="confidence">
+                    <h3>Confidence Scores:</h3>
+                    <div id="confidenceScores"></div>
+                </div>
+
+                <div class="features">
+                    <h3>Extracted Features:</h3>
+                    <div id="featuresList"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="error" class="error hidden"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
