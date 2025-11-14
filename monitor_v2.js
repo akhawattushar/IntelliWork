@@ -1,7 +1,7 @@
 // Real-Time Monitoring Dashboard with Demo/Hardware Mode Toggle
 // Save this as: monitor_v2_with_toggle.js
 
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://akhawattushar-intelliwork-backend.hf.space';
 
 // Global state
 let monitoringInterval = null;
