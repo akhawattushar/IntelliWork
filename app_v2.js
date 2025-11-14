@@ -1,5 +1,5 @@
 // Configuration
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://akhawattushar-intelliwork-backend.hf.space';
 
 // Utility Functions
 function hideAll() {
