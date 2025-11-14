@@ -236,4 +236,4 @@ if __name__ == '__main__':
     print('  - http://localhost:5000/predict : Analyze waveform')
     print('  - http://localhost:5000/simulate: Generate & analyze')
     print('=' * 60)
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    pp.run(debug=False, host='0.0.0.0', port=7860)
