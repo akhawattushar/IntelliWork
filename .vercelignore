@@ -1,0 +1,5 @@
+DCRM_Project/backend/
+DCRM_Project/data/
+node_modules/
+.git/
+*.md

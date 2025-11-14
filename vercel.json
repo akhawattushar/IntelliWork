@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.js",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/monitor",
+      "dest": "/monitor_v2.html"
+    },
+    {
+      "src": "/(.*\\.(css|js|html|png|jpg|ico))",
+      "dest": "/$1"
+    }
+  ]
+}
